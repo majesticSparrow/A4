@@ -1,0 +1,28 @@
+
+INFORMATION
+path s to t is not safe if s has a camera
+safe if no edges on path is a toll road
+safe if no vertices except t contains a camera.
+
+vertices.txt
+    all specified vertices have red light cameras
+
+edges.txt
+some edges are toll roads with the last four letters of that line (excluding the newline character) being "TOLL"
+    First two values in each row are the connecting vertices.
+    Third value is the length of the edge.
+    If a fourth value exists it is the string 'TOLL'
+
+
+take_input -> 
+
+
+take input vertex id v and value k
+    closest k cameras from vertex v.
+    shortest paths to each camera.
+
+
+
+
+assumptions
+6105 vertices indexed from 0 to 6104
