@@ -1,36 +1,26 @@
-# By Matthew Jake Corpus Alix, ID 287 661 72, for FIT2004.
-# Last modified 18.03.18
+# By Matthew Jake Corpus Alix, ID 287 661 72.
+# Last modified 20.05.18
 
-TIME_FILE = 'timeSpent.txt'
-MAX_USER_DIGITS = 5               # only used to format output
-DEBUGGING = False
-
-def DEBUG_print(x):
-    if DEBUGGING:
-        print(x)
-
-
-class UserEntry:
-    def __init__(self, user, value):
+class Node:
+    def __init__(self, user, weight):
         self.user = user
-        self.value = value
+        self.weight = weight
 
     def __gt__(self, other):
-        return self.value > other.value
+        return self.weight > other.weight
 
     def __lt__(self, other):
-        return self.value < other.value
+        return self.weight < other.weight
 
     def __eq__(self, other):
-        return self.value == other.value
+        return self.weight == other.weight
 
     def __le__(self, other):
-        return self.value <= other.value
+        return self.weight <= other.weight
 
 
-
-class TopKMinHeap:
-    def __init__(self, k):
+class FixedMinHeap:
+    def __init_   _(self, k):
         self.count = 0
         self.max_size = k
         self.array = [0]*(self.max_size+1) # One more than max_size due to
@@ -38,10 +28,10 @@ class TopKMinHeap:
         self.root = 1
 
     def add_element(self, key, item):
-        entry = UserEntry(key, item)
+        entry = Node(key, item)
         heap_member = True
         if self.count == self.max_size: # Heap is full
-
+            # the minimum is currently less than the entry weight
             cond_1 = (self.array[self.root] < entry)
             cond_2 = (self.array[self.root] == entry) and \
                         (self.array[self.root].user > entry.user)
@@ -68,7 +58,7 @@ class TopKMinHeap:
             # 1. 'Pop' off the minimum into return_array, by swapping with last
             #       element and then decrementing the count.
             self._swap(self.root, self.count)
-            return_array[i] = [self.array[self.count].value,
+            return_array[i] = [self.array[self.count].weight,
                                  self.array[self.count].user]
             self.count -= 1
             # 2. Re-establish the heap.
@@ -77,39 +67,22 @@ class TopKMinHeap:
 
         self.array = return_array.reverse()
 
-        DEBUG_print("Return array END: " + str(return_array) + '\n' + 100 * '#')
-
         # 3. Return return_array in the required order.
         return return_array
 
     def _rise(self, k): # O(log k) time; element will rise for at most
                         # the height of the tree.
 
-        DEBUG_print("confirm above is " + str(k) + '\n')
-
         while k > self.root and self.array[k] < self.array[k//2]:
-
             self._swap(k, k // 2)
-
             k //= 2
 
         while k > self.root and self.array[k] == self.array[k//2]:
-
-            # Ensure parent with equal value has the larger ID.
-            if self.array[k].user > self.array[k//2].user: #DO TESTTO
-
-                DEBUG_print('CONFIRMED child is not root AND parent has equal' +
-                              ' value to child, but parent has a lower userID.' +
-                              '\nSWAPPING...\n')
-
+            # Ensure parent with equal weight has the larger ID.
+            if self.array[k].user > self.array[k//2].user:
                 self._swap(k, k // 2)
-
                 k //= 2
-            else:
-                DEBUG_print('CONFIRMED child is not root AND parent has equal' +
-                      ' value to child, but parent still has the larger userID.' +
-                      '\nNOT SWAPPING...\n')
-                break
+
 
     def _swap(self, first, second):
         self.array[first], self.array[second] = \
@@ -154,8 +127,11 @@ class TopKMinHeap:
 
 
 def main():
-    heap_size = int(input("\nEnter the value of k \n>>>"))
-    heap = TopKMinHeap(heap_size)
+    TIME_FILE = 'timeSpent.txt'
+    MAX_USER_DIGITS = 5  # only used to format output
+
+    heap_size = int(input("\nEnter the weight of k \n>>>"))
+    heap = FixedMinHeap(heap_size)
     users = []
     with open(TIME_FILE) as f:
         for line in f:

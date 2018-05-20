@@ -14,15 +14,157 @@ some edges are toll roads with the last four letters of that line (excluding the
     If a fourth value exists it is the string 'TOLL'
 
 
-take_input -> 
-
 
 take input vertex id v and value k
     closest k cameras from vertex v.
     shortest paths to each camera.
 
 
+complexity
+    O(V log V + E log V) time to determine k closest cameras
+    O(V log V + E log V + P) time to print shortest paths to closest k cameras
+    V,E,P are the number of vertices, edges, and edges printed, respectively.
+
+    Each edge is visited exactly once.
+    We update the distance of a vertex in O(log V) time (how?)
+    Since we must visit all edges, using Dijkstra to determine all shortest paths is O(E log V) time.
+    we can check the shortest path to a vertex v has been finalised in O(1) time.
+
+
+
+###################
+Dijkstra with a sorted array
+    Assume Discovered is implemented using array sorted by IDs.
+    initialise Discovered with initial vertex A, with distance 0.
+    
+    while Discovered is not empty: (O(V)) - each vertex is added to Discovered exactly once.
+        get the closest vertex (O(V))
+        for each outgoing edge (v,u,w) of v: # (O(E)) - constant time operations for every edge in V
+            if u is not Finalised or discovered: 
+                insert u in discovered with distance v.distance + w 
+            elif u.distance > v.distance + w # if it exists and is less than the new edge than ignore the new edge.
+        move v from discovered to finalised
+       
+    TIME (E+V)*V = EV + V^2 = EO(V^2)
+####################
+
+
+
+
+    
+    ALGORITHM
+Reading input:
+    adjacency list takes O(V + E) space
+    for one edge: O(E) with constant insertion??
+        insert in adjacency list index with weight and True for hasToll attribute.
+    for one vertex: O(V)
+        set Undiscovered[v] to True for hasCamera attribute. 
+
+
+Node
+    ID
+    edges        
+    path_to (a reference plus this node; use a tuple)
+    has_camera
+
+Edge
+    from
+    to
+    distance
+    has_toll
+
+
+-----------
+add v to min-heap O(log V)
+
+-----------
+while Discovered not empty # Loop will run                                  O(V) times.
+        pop v into soln array                                                   (O(log V) to heapify)
+
+        # The for loop will not run more than E times over the total number of iterations of the while loop. So case 1 of the if statement will not run more than E times.
+        # at worst, each of E times that we follow an edge, we will need to insert a new camera into the min-heap or update a distance. Then this for loop will take O(E log V) time in total.
+
+        if v has no camera:        
+            for each Edge in Adjacency[v] to a node u:                                              
+                if the edge is not a toll road: # we won't traverse to any node from here through a toll road.
+                    if u is neither finalised nor discovered (is -2):
+                        insert u in discovered with distance v.distance + w         O(log V)
+                        update Vertices[u.ID] with u's position in the heap (its weight).
+                    elif u.distance > v.distance + w:
+                        assert u is not finalised??? its value in Vertices
+                        update distance of u to v.distance + w.                     O(log V)
+        
+        move v from discovered to finalised
+         
+
+heapsort, returning top k cameras.
+output the optimal paths to each camera.
+-----------
+update_distance
+    reduce weight.
+    rise element.
+    for each swap, update swapped indices in Vertices.
+
+ An array called Vertices that stores index locations in the min-heap, so that the vertex with ID v has a min-heap index stored at Vertices[v]. O(V)
+
+
+
+-----------
+        
+
+shortest_paths is an array of size k
+    
+we want the top k CAMERAS. So we only add a vertex to the minheap if hasCamera is true?
+No... since the algo traverses ALL edges anyway, we need to update the shortest distance to each.
+BUT if hasToll is true, then the edge is not valid. So we only iterate through VALID edges in the adjacency list.
+
+Once we have the finalised distances for the entire set, THEN we heapsort. IFF hasCamera is True do we add it to the output list, up to k cameras.
+
+Since we need to know the optimal path for the optimal distance to each camera, we need to update a solution vertex with its optimal path as an attribute.
+    IF u is not finalised or discovered, then we add the path attribute of the previous node to this one.
+
+Since no intermediary nodes may include a camera (including the start node), we need to check that there's no camera at a given node before we start considering trying to reach other nodes.
+
+
+
+
+########
+    
+
+    while Discovered is not empty:    # O(V). Each vertex is added and removed exactly once.
+        get closest vertex (access + removal + heapify -> O(log V). We can remove it since it will be finalised after this loop terminates.)
+
+        update_distance in O(log V):
+            for a vertex v in a min-heap Vertices;
+            retrieve adjacent vertices (O(V))
+            
+        
+
+    decrease the key of element at min-heap
+
+    update value
+    rise
+        every time we rise, update Vertices.
+
+
+Adjacency list:
+    Space O(V + E)
+    Time to check existence O(log V) assuming sorted (access v, then binary search it)
+    Time to retrieve adjacent vertices O(X) where X adjacent vertices and X <= V
+
+Adjacency Lists are better in all cases than an adjacency matrix except for checking the existence of edges.
+
+so:
+    Assume Discovered is a min-heap sorted by weight.
+    Initialise Discovered with initial vertex A, with distance 0.
+    while Discovered is not empty:
+        get the closest vertex
+
+j = Vertices[v]
+
 
 
 assumptions
 6105 vertices indexed from 0 to 6104
+k > 0
+the length of a road (some edge e) cannot be negative.

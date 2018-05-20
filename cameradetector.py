@@ -1,31 +1,13 @@
+# By Matthew Jake Corpus Alix, ID 287 661 72.
+# Last modified 20.05.18
+
+from fixed_min_heap import FixedMinHeap
+
+def _read_graph(camera_file, road_file):
+    with open(camera_file) as f:
+        for camera in f:
 
 
-
-def _take_input():
-    VERTEX_PROMPT = "Enter your location: "
-    K_PROMPT = "Enter k: " # i.e. to get the k closest vertices with cameras.
-    VERTEX_RANGE = 6104 # PRECOND: must be an int > 0, representing # of vertices.
-    def __take_location():
-        try:
-            location = input(VERTEX_PROMPT)
-            if (isinstance(location,int)
-                ) and (location in range(VERTEX_RANGE+1)):
-                return location
-            else:
-                raise IOError
-        except IOError:
-            __take_location()
-    def __take_k():
-        try:
-            k = input(K_PROMPT)
-            if (isinstance(k,int)) and (k>0):
-                return k
-            else:
-                raise IOError
-        except IOError:
-            __take_k()
-
-    return __take_location(),__take_k()
 
 def _output_paths():
     NO_PATHS_MSG = "Oops! Cannot help, Alice!!! Smile for the camera!"
@@ -44,20 +26,49 @@ def _output_paths():
     pass
 
 def main():
-    _EDGE_FILE = "edges.txt"
-    _VERTEX_FILE = "vertices.txt"
+    _ROAD_FILE = "edges.txt"
+    _CAMERA_FILE = "vertices.txt"
+    _XSECTION_COUNT = 6105
 
-    loc, k = _take_input()
+    def _user_input():
+        VERTEX_PROMPT = "Enter your location: "
+        K_PROMPT = "Enter k: "  # i.e. to get the k closest vertices with cameras.
+
+        def __take_location():
+            try:
+                location = input(VERTEX_PROMPT)
+                if (isinstance(location, int)
+                    ) and (location in range(_XSECTION_COUNT)):
+                    return location
+                else:
+                    raise IOError
+            except IOError:
+                __take_location()
+
+        def __take_k():
+            try:
+                k = input(K_PROMPT)
+                if (isinstance(k, int)) and (k > 0):
+                    return k
+                else:
+                    raise IOError
+            except IOError:
+                __take_k()
+
+        return __take_location(), __take_k()
+
+    intersections = [-2] * _XSECTION_COUNT  # '-2' = 'undiscovered'
+    loc, k = _user_input()
+
+    _read_graph(_CAMERA_FILE, _ROAD_FILE)
+
+
+
     loc
     k
 
 
-    with open(_VERTEX_FILE) as vf:
-        pass
-
-    with open(_EDGE_FILE) as ef:
-        pass
-
 
 if __name__=='__main__':
     main()
+
